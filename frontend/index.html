@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Keyword Generator</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 40px;
+        }
+
+        textarea {
+            width: 400px;
+            height: 120px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .keyword {
+            background: #f2f2f2;
+            padding: 8px;
+            margin: 5px;
+            display: inline-block;
+            border-radius: 5px;
+        }
+
+        .score {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h2>SEO Keyword Generator</h2>
+
+<textarea id="text" placeholder="Enter content here..."></textarea>
+<br>
+
+<button onclick="generateKeywords()">Generate Keywords</button>
+
+<h3>Results:</h3>
+<div id="results"></div>
+
+<script>
+async function generateKeywords() {
+    const text = document.getElementById("text").value;
+
+    const response = await fetch("http://localhost:8080/generate-keywords", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text: text })
+    });
+
+    const data = await response.json();
+
+    console.log("API RESPONSE:", data); // IMPORTANT DEBUG
+
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    if (!data || data.length === 0) {
+        resultsDiv.innerHTML = "<p>No keywords generated</p>";
+        return;
+    }
+
+    data.forEach(item => {
+        resultsDiv.innerHTML += `
+            <div class="keyword">
+                ${item.keyword}
+                <span class="score">(${item.score})</span>
+            </div>
+        `;
+    });
+}
+</script>
+
+</body>
+</html>

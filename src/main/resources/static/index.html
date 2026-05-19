@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SEO Keyword Generator</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 40px;
+        }
+
+        textarea {
+            width: 500px;
+            height: 150px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        .keyword {
+            background: #f2f2f2;
+            margin: 5px;
+            padding: 8px;
+            border-radius: 5px;
+        }
+
+        .score {
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>SEO Keyword Generator</h1>
+
+<textarea id="content" placeholder="Enter content..."></textarea>
+<br>
+
+<button onclick="generateKeywords()">
+    Generate Keywords
+</button>
+
+<h2>Generated Keywords</h2>
+
+<div id="results"></div>
+
+<script>
+
+async function generateKeywords() {
+
+    const text = document.getElementById("content").value;
+
+    const response = await fetch("/generate-keywords", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            text: text
+        })
+    });
+
+    const data = await response.json();
+
+    const resultsDiv = document.getElementById("results");
+
+    resultsDiv.innerHTML = "";
+
+    data.forEach(item => {
+
+        resultsDiv.innerHTML += `
+            <div class="keyword">
+                ${item.keyword}
+                <span class="score">
+                    (Score: ${item.score})
+                </span>
+            </div>
+        `;
+    });
+}
+
+</script>
+
+</body>
+</html>
